@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import MapView from './components/MapView';
-import TouristSpotList from './components/TouristSpotList';
-import CouponList from './components/CouponList';
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import Home from './pages/Home';
+import Merchants from './pages/Merchants';
+import './App.css';
 
 // Dados simulados de pontos turísticos e cupons
 const TOURIST_SPOTS = [
@@ -51,19 +51,36 @@ function App() {
   const unlockedCoupons = COUPONS.filter(coupon => checkedInSpots.includes(coupon.spotId));
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900">
-      <header className="bg-green-700 text-white p-4 shadow">
-        <h1 className="text-2xl font-bold text-center">Locall</h1>
-        <p className="text-center text-sm">Descubra Lages-SC, faça check-in nos pontos turísticos e desbloqueie cupons exclusivos!</p>
-      </header>
-      <main className="p-4 flex flex-col gap-8 max-w-4xl mx-auto">
-        <MapView />
-        <TouristSpotList spots={TOURIST_SPOTS} onCheckIn={handleCheckIn} checkedInSpots={checkedInSpots} />
-        <CouponList coupons={unlockedCoupons} onUseCoupon={handleUseCoupon} usedCoupons={usedCoupons} />
-      </main>
-      <footer className="text-center text-xs text-gray-500 py-4">&copy; {new Date().getFullYear()} Locall</footer>
-    </div>
+    <Router>
+      <div className="min-h-screen bg-gray-50 text-gray-900">
+        <header className="bg-green-700 text-white p-4 shadow">
+          <h1 className="text-2xl font-bold text-center">Locall</h1>
+          <p className="text-center text-sm mb-4">Descubra Lages-SC, faça check-in nos pontos turísticos e desbloqueie cupons exclusivos!</p>
+          <nav className="flex justify-center gap-4">
+            <Link to="/" className="hover:text-green-200 font-medium">Mapa</Link>
+            <Link to="/merchants" className="hover:text-green-200 font-medium">Comerciantes</Link>
+          </nav>
+        </header>
+        <main className="max-w-4xl mx-auto">
+          <Routes>
+            <Route 
+              path="/" 
+              element={
+                <Home 
+                  checkedInSpots={checkedInSpots}
+                  usedCoupons={usedCoupons}
+                  onCheckIn={handleCheckIn}
+                  onUseCoupon={handleUseCoupon}
+                />
+              } 
+            />
+            <Route path="/merchants" element={<Merchants />} />
+          </Routes>
+        </main>
+        <footer className="text-center text-xs text-gray-500 py-4">&copy; {new Date().getFullYear()} Locall</footer>
+      </div>
+    </Router>
   );
 }
 
-export default App
+export default App;
